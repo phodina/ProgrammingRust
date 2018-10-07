@@ -1,7 +1,20 @@
 extern crate num;
+extern crate image;
 
 use num::Complex;
 use std::str::FromStr;
+use image::ColorType;
+use image::png::PNGEncoder;
+use std::fs::File;
+
+/// Write the buffer `pixels`, whose dimensions are given by `bounds`, to the file named `filename`.
+fn write_image(filename: &str, pixels: &[u8], bounds: (usize, usize)) -> Result<(), std::io::Error> {
+    let output = File::create(filename)?;
+
+    let encoder = PNGEncoder::new(output);
+    encoder.encode(&pixels, bounds.0 as u32, bounds.1 as u32, ColorType::Gray(8))?;
+    Ok(())
+}
 
 /// Parse the string `s` as a coordinate pair like `"400x600"` or `"1.0,0.5"`
 ///
